@@ -10,10 +10,13 @@ output_path = os.path.expanduser(f"{OUTPUT_FOLDER}/{title}")
 
 os.makedirs(output_path, exist_ok=True)
 
-pattern = r'^(\d+(?:\.\d+)?)'
-num_re = re.compile(pattern)
 
-chapters = os.listdir(manga_path)
+def format_chapter_number(chapter: str) -> str:
+    number = extract_num(chapter)
+
+    if number.is_integer():
+        return str(int(number))
+    return str(number)
 
 
 def extract_num(title: str) -> float:
@@ -22,8 +25,12 @@ def extract_num(title: str) -> float:
         raise ValueError(f"Inappropriate name: {title}")
     return float(number.group(1))
 
-chapters.sort(key=extract_num)
 
+pattern = r'^(\d+(?:\.\d+)?)'
+num_re = re.compile(pattern)
+
+chapters = os.listdir(manga_path)
+chapters.sort(key=extract_num)
 
 for ch in chapters:
     pages_path = os.path.join(manga_path, ch)
@@ -34,7 +41,8 @@ for ch in chapters:
     pages = os.listdir(pages_path)
     pages.sort(key=lambda p: float(os.path.splitext(p)[0]))
 
-    filename = os.path.join(output_path, f"{ch}.cbz")
+    chapter_num = format_chapter_number(ch)
+    filename = os.path.join(output_path, f"{chapter_num}.cbz")
 
     with zipfile.ZipFile(filename, 'w') as cbz:
         for p in pages:
@@ -42,22 +50,5 @@ for ch in chapters:
             cbz.write(page_path, arcname=p)
 
     print(filename)
-
-for name in os.listdir(output_path):
-    if not name.endswith(".cbz"):
-        continue
-
-    m = num_re.match(name)
-    if not m:
-        continue
-
-    new_name = f"{m.group(1)}.cbz"
-
-    old_path = os.path.join(output_path, name)
-    new_path = os.path.join(output_path, new_name)
-
-    if old_path != new_path:
-        os.rename(old_path, new_path)
-        print(f"{name} --> {new_name}")
 
 print("\nDone.")
