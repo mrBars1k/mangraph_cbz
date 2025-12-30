@@ -2,10 +2,11 @@ import os
 import re
 import zipfile
 
-title = input("Введите название манги: ")
+title = input("Enter the manga title (folder name): ")
+manga_folder = "~/mnt/khaine/manga"
 
-path = os.path.expanduser(f"~/mnt/khaine/manga/{title}")
-output_path = os.path.expanduser(f"~/mnt/khaine/output/{title}")
+path = os.path.expanduser(f"{manga_folder}/{title}")
+output_path = os.path.expanduser(f"{manga_folder}/output/{title}")
 os.makedirs(output_path, exist_ok=True)
 
 pattern = r'^(\d+(?:\.\d+)?)'
@@ -49,4 +50,4 @@ for name in os.listdir(output_path):
         os.rename(old_path, new_path)
         print(f"{name} --> {new_name}")
 
-print("\nРабота завершена.")
+print("\nDone.")
