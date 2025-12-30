@@ -1,22 +1,23 @@
 import os
 import re
 import zipfile
+from config import MANGA_FOLDER, OUTPUT_FOLDER
 
 title = input("Enter the manga title (folder name): ")
-manga_folder = "~/mnt/khaine/manga"
 
-path = os.path.expanduser(f"{manga_folder}/{title}")
-output_path = os.path.expanduser(f"{manga_folder}/output/{title}")
+manga_path = os.path.expanduser(f"{MANGA_FOLDER}/{title}")
+output_path = os.path.expanduser(f"{OUTPUT_FOLDER}/{title}")
+
 os.makedirs(output_path, exist_ok=True)
 
 pattern = r'^(\d+(?:\.\d+)?)'
 num_re = re.compile(pattern)
 
-chapters = os.listdir(path)
+chapters = os.listdir(manga_path)
 chapters.sort(key=lambda ch: float(num_re.match(ch).group(1)))
 
 for ch in chapters:
-    pages_path = os.path.join(path, ch)
+    pages_path = os.path.join(manga_path, ch)
 
     if not os.path.isdir(pages_path):
         continue
