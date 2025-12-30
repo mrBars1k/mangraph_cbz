@@ -14,7 +14,16 @@ pattern = r'^(\d+(?:\.\d+)?)'
 num_re = re.compile(pattern)
 
 chapters = os.listdir(manga_path)
-chapters.sort(key=lambda ch: float(num_re.match(ch).group(1)))
+
+
+def extract_num(title: str) -> float:
+    number = num_re.match(title)
+    if not number:
+        raise ValueError(f"Inappropriate name: {title}")
+    return float(number.group(1))
+
+chapters.sort(key=extract_num)
+
 
 for ch in chapters:
     pages_path = os.path.join(manga_path, ch)
