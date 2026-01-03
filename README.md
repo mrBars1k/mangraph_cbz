@@ -16,6 +16,6 @@ This continues until all chapters are finished.
 > For the most accurate and predictable results, all folders and page files should be named with a number.
 
 ## Libraries used:
-- os
 - re
+- pathlib
 - zipfile
